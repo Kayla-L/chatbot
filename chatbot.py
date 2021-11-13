@@ -51,7 +51,12 @@ intents = {
     "utterance_patterns": [
       # TODO 3: this should be a comma-separated list of strings that the user
       # might say that are greetings
-      [YOUR CODE HERE]
+      "hello", 
+      "good morning", 
+      "good afternoon", 
+      "good evening",
+      "hi", 
+      "hey"
     ],
     # Ways the chatbot can respond if the user intends to greet the chatbot
     # TODO 8: add more ways the chatbot can respond to a greeting
@@ -67,6 +72,22 @@ intents = {
       }
     ]
   },
+  "ask_name": {
+    "utterance_patterns": [
+      "what's your name?",
+      "what is your name?",
+      "who are you?",
+
+    ],
+    "responses": [
+      {
+        "text": "I don't have a name just yet. Hopefully I will have one soon."
+      },
+      {
+        "text": "Hmm, what a good question. I do not know. Might you have any suggestions?"
+      }
+    ]
+  }
   # "INTENT_NAME": {
   #   "utterance_patterns": [
   #     "",
@@ -101,7 +122,7 @@ TODO 11: more improvements to matching function?
 """
 def match_utterances(utterance, utterance_pattern):
   # TODO 4: check if the utterance is exactly the same as the utterance pattern
-  if [YOUR CODE HERE]:
+  if utterance == utterance_pattern:
     return True
   else:
     return False
@@ -179,15 +200,15 @@ def decide_response(intent_name):
   possible_responses = filter_responses_to_known_variables(all_responses)
   # TODO 7: randomly chose from multiple possible responses
   # TODO 5: return the first element from possible_responses
-  response = [YOUR CODE HERE]
+  response = possible_responses[0]
   return response
 
 """
 Display a prompt and return the user's utterance
 """
 def get_user_utterance():
-  # TODO 1: get input from the user
-  user_utterance = [YOUR CODE HERE]
+  # get input from the user
+  user_utterance = input("Type something here to have a chat: ")
   return user_utterance
 
 """
@@ -195,7 +216,7 @@ Once we've decided on the text of our response, print that text out for the user
 """
 def display_chatbot_response(response):
   # TODO 2: print out the chatbot's response
-  [YOUR CODE HERE]
+  print("Chat Bot:", response)
 
 """
 Some extra code to add variables that the chatbot remembers from talking to the
