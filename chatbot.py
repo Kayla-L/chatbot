@@ -31,6 +31,10 @@ conversation_state = {
   "user_name": None
 }
 
+# This variable tracks whether we have a leftover intent from earlier in the
+# conversation.
+current_intent_name = None
+
 """
 Here's where we store data of what kinds of intentions the user might have in
 talking to the chatbot. Things like greetings, farewells, asking for the
@@ -81,10 +85,21 @@ intents = {
     ],
     "responses": [
       {
-        "text": "I don't have a name just yet. Hopefully I will have one soon."
+        "text": "Hmm, what a good question. I do not know. Might you have any suggestions?",
+        "next_intent": "suggest_name"
       },
       {
-        "text": "Hmm, what a good question. I do not know. Might you have any suggestions?"
+        "text": "I don't have a name just yet. Hopefully I will have one soon."
+      },
+    ]
+  },
+  "suggest_name": {
+    "utterance_patterns": [
+      "your name should be ..."
+    ],
+    "responses": [
+      {
+        "text": "Thanks! I like that name!"
       }
     ]
   }
@@ -242,13 +257,28 @@ def introduction():
 Main program loop
 """
 def main():
+  global current_intent_name
+
   introduction()
   # TODO 14: allow the computer to stop the conversation if the user says "goodbye"
   continue_conversation = True
   while continue_conversation:
     user_utterance = get_user_utterance()
-    user_intent_name = match_intent(user_utterance)
+
+    # We might have an intent leftover?
+    if current_intent_name is None:
+      user_intent_name = match_intent(user_utterance)
+    else:
+      # Once we've used the leftover intent, we reset the "current_intent_name"
+      user_intent_name = current_intent_name
+      current_intent_name = None
+
     chatbot_response_data = decide_response(user_intent_name)
+
+    # We might update current intent based on what the chatbot says
+    if "next_intent" in chatbot_response_data:
+      current_intent_name = chatbot_response_data["next_intent"]
+    
     chatbot_response_text = add_variables_to_response(chatbot_response_data)
     display_chatbot_response(chatbot_response_text)
 
