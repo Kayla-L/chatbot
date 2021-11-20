@@ -102,6 +102,10 @@ intents = {
     ],
     "responses": [
       {
+        "text": "Thanks, {suggested_name} is a good name!",
+        "required_state_variables": ["suggested_name"]
+      },
+      {
         "text": "Thanks! I like that name!"
       }
     ]
