@@ -175,6 +175,16 @@ intents = {
           "text": ""
         }
       ]
+    },
+    # A default intent. What should we do if we can't understand what the user
+    # was trying to say?
+    "default": {
+      "utterance_patterns": [],
+      "responses": [
+        {
+          "text": "I'm sorry, I did not understand."
+        }
+      ]
     }
   # "INTENT_NAME": {
   #   "utterance_patterns": [
@@ -187,18 +197,6 @@ intents = {
   #     }
   #   ]
   # }
-}
-
-"""
-A default intent. What should we do if we can't understand what the user was
-trying to say?
-"""
-default_intent = {
-  "responses": [
-    {
-      "text": "I'm sorry, I did not understand."
-    }
-  ]
 }
 
 """
@@ -237,7 +235,7 @@ def match_intent(utterance):
         return intent_name
   # If we get through all the intents and none of the patterns
   # match, return None to indicate there was no match
-  return None
+  return "default"
 
 """
 Some of the responses the chatbot might consider include information like the
@@ -275,11 +273,8 @@ def filter_responses_to_known_variables(responses):
 Given a user's intention, decide how the chatbot should respond.
 """
 def decide_response(intent_name):
-  if intent_name is None:
-    intent = default_intent
-  else:
-    # Grab the dict with data for that intent
-    intent = intents[intent_name]
+  # Grab the dict with data for that intent
+  intent = intents[intent_name]
   # Grab all possible responses for that intent
   all_responses = intent["responses"]
   # Filter to only the responses we have enough information for
