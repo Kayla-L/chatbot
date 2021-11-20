@@ -1,3 +1,5 @@
+from random import choice
+
 """
 Instructions:
 
@@ -37,7 +39,7 @@ current_intent_name = None
 
 def update_conversation_state(variable_name):
   def update_this_variable(utterance):
-    conversation_state[variable_name] = utterance
+    conversation_state[variable_name] = utterance.strip()
   return update_this_variable
 
 """
@@ -285,8 +287,9 @@ def decide_response(intent_name):
   # conversation state)
   possible_responses = filter_responses_to_known_variables(all_responses)
   # TODO 7: randomly chose from multiple possible responses
+  response = choice(all_responses)
   # TODO 5: return the first element from possible_responses
-  response = possible_responses[0]
+  # response = possible_responses[0]
   return response
 
 """
@@ -302,7 +305,11 @@ Once we've decided on the text of our response, print that text out for the user
 """
 def display_chatbot_response(response):
   # TODO 2: print out the chatbot's response
-  print("Chat Bot:", response)
+  if "chatbot_name" in conversation_state:
+    chatbot_name = conversation_state["chatbot_name"]
+    print(chatbot_name, ": ", response, sep = "")
+  else:
+    print("Chat Bot:", response)
 
 """
 Some extra code to add variables that the chatbot remembers from talking to the
