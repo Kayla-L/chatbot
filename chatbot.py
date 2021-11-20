@@ -62,13 +62,16 @@ intents = {
     # TODO 8: add more ways the chatbot can respond to a greeting
     "responses": [
       {
-        "text": "Hello!"
+        "text": "Hello!",
       },
       {
         # Text to send back to the user might require the chatbot to remember
         # things the user has said in the past.
         "text": "Hello, {user_name}!",
         "required_state_variables": ["user_name"]
+      },
+      {
+        "text": "Salutations!"
       }
     ]
   },
@@ -77,7 +80,7 @@ intents = {
       "what's your name?",
       "what is your name?",
       "who are you?",
-
+      "what is your name"
     ],
     "responses": [
       {
@@ -87,7 +90,65 @@ intents = {
         "text": "Hmm, what a good question. I do not know. Might you have any suggestions?"
       }
     ]
-  }
+  },
+  "ask_age": {
+    "utterance_patterns": [
+      "How old are you",
+      "How old r u"
+    ],
+    "responses": [
+      {
+        "text": "That is a good question...a question that I don't know the answer to."
+      }
+    ]
+  },
+    "ask_favorite_foods": {
+    "utterance_patterns": [
+      "What food do you like?",
+      "What's your favorite food?",
+      "What do you like to eat?",
+      "What's your favorite thing to eat?"
+    ],
+    "responses": [
+      {
+        "text": "My favorite food.... Now I'd have to say jalapeños!"
+      }
+    ]
+  },
+    "ask_joke": {
+    "utterance_patterns": [
+      "Tell me a joke",
+      "Do you know any jokes?",
+      "What's a good joke?"
+    ],
+    "responses": [
+      {
+        "text": "Ladies and gents, if he can't appreciate your fruit jokes, you need to let that mango."
+      },
+      {
+        "text": "Why was Dumbo the elephant sad? He felt irrelephant."
+      },
+      {
+        "text": "Why do spiders adapt so quickly to online learning? They're very comfortable on the web."
+      },
+      {
+        "text": "A sheep, a drum, and a snake fell off a cliff. What do you hear? Bah-dum-sss."
+      },
+    ]
+  },
+    "ask_riddle": {
+      "utterance_patterns": [
+        "Tell me a riddle",
+        "Do you have any riddles?",
+        "Do you know any riddles?"
+        "Give me a riddle"
+      ],
+      "responses": [
+        {
+          "text": ""
+        }
+      ]
+    }
   # "INTENT_NAME": {
   #   "utterance_patterns": [
   #     "",
