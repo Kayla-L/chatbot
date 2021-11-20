@@ -35,6 +35,11 @@ conversation_state = {
 # conversation.
 current_intent_name = None
 
+def update_conversation_state(variable_name):
+  def update_this_variable(utterance):
+    conversation_state[variable_name] = utterance
+  return update_this_variable
+
 """
 Here's where we store data of what kinds of intentions the user might have in
 talking to the chatbot. Things like greetings, farewells, asking for the
@@ -42,7 +47,7 @@ chatbot's name, etc.
 
 Right now, we're starting off with just one intent, a "greeting" intent. Each
 intent stores patterns of text the user might say that would signal this intent
-and some information about how to respond.\
+and some information about how to respond.
 
 TODO 6: add more intents
 """
@@ -100,10 +105,11 @@ intents = {
     "utterance_patterns": [
       "your name should be ..."
     ],
+    "interpretation_function": update_conversation_state("chatbot_name"),
     "responses": [
       {
-        "text": "Thanks, {suggested_name} is a good name!",
-        "required_state_variables": ["suggested_name"]
+        "text": "Thanks, {chatbot_name} is a good name!",
+        "required_state_variables": ["chatbot_name"]
       },
       {
         "text": "Thanks! I like that name!"
@@ -243,8 +249,8 @@ def filter_responses_to_known_variables(responses):
   for response in responses:
     # If the response requires variables from the conversation
     # state, check if we have those variables
-    if "required_variables" in response:
-      required_variables = response["required_variables"]
+    if "required_state_variables" in response:
+      required_variables = response["required_state_variables"]
       # Start off assuming that we are NOT missing variables
       missing_variables = False
       for required_variable in required_variables:
@@ -304,10 +310,16 @@ user, like the user's name or favorite color.
 """
 def add_variables_to_response(response_data):
   text = response_data["text"]
-  if "required_variables" in response_data:
-    required_variables = response_data["required_variables"]
+  if "required_state_variables" in response_data:
+    required_variables = response_data["required_state_variables"]
     text = text.format(**conversation_state)
   return text
+
+def interpret_utterance(intent_name, utterance):
+  intent_data = intents[intent_name]
+  if "interpretation_function" in intent_data:
+    interpretation_function = intent_data["interpretation_function"]
+    interpretation_function(utterance)
 
 """
 Before we get to the main loop of the conversation, start off with a predictable
@@ -337,6 +349,10 @@ def main():
       # Once we've used the leftover intent, we reset the "current_intent_name"
       user_intent_name = current_intent_name
       current_intent_name = None
+
+    # Once we know what the user is trying to do, interpret the details of
+    # their utterance and save any variables to the conversation_state
+    interpret_utterance(user_intent_name, user_utterance)
 
     chatbot_response_data = decide_response(user_intent_name)
 
