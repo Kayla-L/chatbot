@@ -1,4 +1,5 @@
 from random import choice
+import string
 
 """
 Instructions:
@@ -79,6 +80,7 @@ intents = {
         # Text to send back to the user might require the chatbot to remember
         # things the user has said in the past.
         "text": "Hello, {user_name}!",
+        #TODO 16: ask for the username, if we don't know it yet
         "required_state_variables": ["user_name"]
       },
       {
@@ -97,10 +99,7 @@ intents = {
       {
         "text": "Hmm, what a good question. I do not know. Might you have any suggestions?",
         "next_intent": "suggest_name"
-      },
-      {
-        "text": "I don't have a name just yet. Hopefully I will have one soon."
-      },
+      }
     ]
   },
   "suggest_name": {
@@ -114,7 +113,7 @@ intents = {
         "required_state_variables": ["chatbot_name"]
       },
       {
-        "text": "Thanks! I like that name!"
+        "text": "Thank you, what a lovely name."
       }
     ]
   },
@@ -210,7 +209,10 @@ TODO 11: more improvements to matching function?
 """
 def match_utterances(utterance, utterance_pattern):
   # TODO 4: check if the utterance is exactly the same as the utterance pattern
-  if utterance == utterance_pattern:
+  # Let's remove puntuation 
+  lower_utterance = utterance.lower().strip() 
+  clean_utterance = lower_utterance.translate(str.maketrans('', '', string.punctuation))
+  if clean_utterance == utterance_pattern:
     return True
   else:
     return False
