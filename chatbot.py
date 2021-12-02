@@ -24,7 +24,9 @@ Instructions:
 10. Run the chatbot & get rid of all errors
 11. Modify the code so that the conversation ends when the user has the "goodbye" intent
 12. Run the chatbot & get rid of all errors
-13 (optional). Any other changes you want to make!
+13. Add riddles to the chatbot (TODOs 14 & 15)
+14. Run the chatbot & get rid of all errors
+15. (optional). Any other changes you want to make!
 """
 
 """
@@ -38,7 +40,12 @@ conversation_state = {
 # conversation.
 current_intent_name = None
 
-def update_conversation_state(variable_name):
+def update_conversation_state_with_value(variable_name, variable_value):
+  def update_this_variable():
+    conversation_state[variable_name] = variable_value
+  return update_this_variable
+
+def update_conversation_state_with_utterance(variable_name):
   def update_this_variable(utterance):
     conversation_state[variable_name] = utterance.strip()
   return update_this_variable
@@ -106,7 +113,7 @@ intents = {
     "utterance_patterns": [
       "your name should be ..."
     ],
-    "interpretation_function": update_conversation_state("chatbot_name"),
+    "interpretation_function": update_conversation_state_with_utterance("chatbot_name"),
     "responses": [
       {
         "text": "Thanks, {chatbot_name} is a good name!",
@@ -162,6 +169,11 @@ intents = {
       },
     ]
   },
+  # TODO 14: modify the ask_riddle intent so that it triggers a next_intent to
+  # guess the answer to the riddle.
+  # TODO 15: make a new answer_riddle intent and have the chatbot tell the user
+  # if they got the right answer using the "riddle_answer" variable in the
+  # conversation_state
     "ask_riddle": {
       "utterance_patterns": [
         "Tell me a riddle",
@@ -171,7 +183,23 @@ intents = {
       ],
       "responses": [
         {
-          "text": ""
+          "text": "Here is an example riddle",
+          "response_function": update_conversation_state_with_value(
+            # Here's the key for the variable in the conversation state:
+            "riddle_answer",
+            # Here's the value of that variable (and the answer to the riddle):
+            "42"
+          )
+        }
+      ]
+    },
+    # A default intent. What should we do if we can't understand what the user
+    # was trying to say?
+    "default": {
+      "utterance_patterns": [],
+      "responses": [
+        {
+          "text": "I'm sorry, I did not understand."
         }
       ]
     }
@@ -186,18 +214,6 @@ intents = {
   #     }
   #   ]
   # }
-}
-
-"""
-A default intent. What should we do if we can't understand what the user was
-trying to say?
-"""
-default_intent = {
-  "responses": [
-    {
-      "text": "I'm sorry, I did not understand."
-    }
-  ]
 }
 
 """
@@ -239,7 +255,7 @@ def match_intent(utterance):
         return intent_name
   # If we get through all the intents and none of the patterns
   # match, return None to indicate there was no match
-  return None
+  return "default"
 
 """
 Some of the responses the chatbot might consider include information like the
@@ -277,11 +293,8 @@ def filter_responses_to_known_variables(responses):
 Given a user's intention, decide how the chatbot should respond.
 """
 def decide_response(intent_name):
-  if intent_name is None:
-    intent = default_intent
-  else:
-    # Grab the dict with data for that intent
-    intent = intents[intent_name]
+  # Grab the dict with data for that intent
+  intent = intents[intent_name]
   # Grab all possible responses for that intent
   all_responses = intent["responses"]
   # Filter to only the responses we have enough information for
@@ -330,6 +343,11 @@ def interpret_utterance(intent_name, utterance):
     interpretation_function = intent_data["interpretation_function"]
     interpretation_function(utterance)
 
+def perform_response_action(response_data):
+  if "response_function" in response_data:
+    response_function = response_data["response_function"]
+    response_function()
+
 """
 Before we get to the main loop of the conversation, start off with a predictable
 script where the chatbot introduces themselves and asks the user questions
@@ -371,5 +389,9 @@ def main():
     
     chatbot_response_text = add_variables_to_response(chatbot_response_data)
     display_chatbot_response(chatbot_response_text)
+
+    # Some responses come with actions, here's an opportunity to do something
+    # other than just print text as part of the response
+    perform_response_action(chatbot_response_data)
 
 main()
