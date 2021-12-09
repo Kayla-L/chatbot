@@ -24,9 +24,9 @@ Instructions:
 10. Run the chatbot & get rid of all errors
 11. Modify the code so that the conversation ends when the user has the "goodbye" intent
 12. Run the chatbot & get rid of all errors
-13. Add riddles to the chatbot (TODOs 14 & 15)
-14. Run the chatbot & get rid of all errors
-15. (optional). Any other changes you want to make!
+13. Add riddles to the chatbot. (TODOs 14 & 15) Make a dictionary of all the riddles and answers
+14. Run the chatbot & get rid of all errors 
+15. (optional). Any other changes you want to make! 
 """
 
 """
