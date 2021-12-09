@@ -1,5 +1,6 @@
 from random import choice
 import string
+import re
 
 """
 Instructions:
@@ -51,6 +52,9 @@ def update_conversation_state_with_utterance(variable_name):
   def update_this_variable(utterance):
     conversation_state[variable_name] = utterance.strip()
   return update_this_variable
+
+def calculate():
+  print("wait actually I don't know how to add")
 
 """
 Here's where we store data of what kinds of intentions the user might have in
@@ -221,7 +225,20 @@ intents = {
           )
         }
       ]
-    }
+    },
+  "calculator": {
+    "utterance_patterns": [
+      # if we have a number anywhere in our utterance, this will match
+      "\\d+ \\+",
+    ],
+    "interpretation_function": update_conversation_state_with_utterance("calculation"),
+    "responses": [
+      {
+        "text": "You asked me to add some stuff. Here's the answer:",
+        "response_function": calculate
+      }
+    ]
+  }
   # "INTENT_NAME": {
   #   "utterance_patterns": [
   #     "",
@@ -244,12 +261,14 @@ TODO 11: more improvements to matching function?
 """
 def match_utterances(utterance, utterance_pattern):
   # TODO 4: check if the utterance is exactly the same as the utterance pattern
-  # Let's remove puntuation 
+  if re.match(utterance_pattern, utterance):
+    return True
+  # Let's remove puntuation
   lower_utterance = utterance.lower().strip() 
   clean_utterance = lower_utterance.translate(str.maketrans('', '', string.punctuation))
   utterance_pattern = utterance_pattern.lower().strip() 
   utterance_pattern = utterance_pattern.translate(str.maketrans('', '', string.punctuation))
-  if clean_utterance == utterance_pattern:
+  if utterance_pattern == clean_utterance:
     return True
   else:
     return False
