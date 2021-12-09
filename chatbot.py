@@ -33,7 +33,9 @@ Instructions:
 Here's where we can store any variables the computer learns from the user.
 """
 conversation_state = {
-  "user_name": None
+  "user_name": None,
+  # TODO 14: allow the computer to stop the conversation if the user says "goodbye"
+  "continue_conversation": True
 }
 
 # This variable tracks whether we have a leftover intent from earlier in the
@@ -200,6 +202,23 @@ intents = {
       "responses": [
         {
           "text": "I'm sorry, I did not understand."
+        }
+      ]
+    },
+        "end_conversation": {
+      "utterance_patterns": [
+        "goodbye",
+        "good bye",
+        "stop",
+        "bye"
+      ],
+      "responses": [
+        {
+          "text": "Farewell!",
+          "response_function": update_conversation_state_with_value(
+            "continue_conversation", 
+            False
+          )
         }
       ]
     }
@@ -373,9 +392,8 @@ def main():
   global current_intent_name
 
   introduction()
-  # TODO 14: allow the computer to stop the conversation if the user says "goodbye"
-  continue_conversation = True
-  while continue_conversation:
+
+  while conversation_state["continue_conversation"]:
     user_utterance = get_user_utterance()
 
     # We might have an intent leftover?
