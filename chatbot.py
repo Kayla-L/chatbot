@@ -54,7 +54,9 @@ def update_conversation_state_with_utterance(variable_name):
   return update_this_variable
 
 def calculate():
-  print("wait actually I don't know how to add")
+  calc = conversation_state["calculation"] 
+  print("Answer: " + str(eval(calc)))
+  # print("wait actually I don't know how to add")
 
 """
 Here's where we store data of what kinds of intentions the user might have in
@@ -229,7 +231,8 @@ intents = {
   "calculator": {
     "utterance_patterns": [
       # if we have a number anywhere in our utterance, this will match
-      "\\d+ \\+",
+      # asterisk ignores any extra spaces
+      " *\\d+ *\\+",
     ],
     "interpretation_function": update_conversation_state_with_utterance("calculation"),
     "responses": [
