@@ -80,18 +80,15 @@ intents = {
     # Ways the chatbot can respond if the user intends to greet the chatbot
     # TODO 8: add more ways the chatbot can respond to a greeting
     "responses": [
-      {
-        "text": "Hello!",
-      },
+      # {
+      #   "text": "Hello!",
+      # },
       {
         # Text to send back to the user might require the chatbot to remember
         # things the user has said in the past.
-        "text": "Hello, {user_name}!",
+        "text": "Hello there, {user_name}!",
         #TODO 16: ask for the username, if we don't know it yet
         "required_state_variables": ["user_name"]
-      },
-      {
-        "text": "Salutations!"
       }
     ]
   },
@@ -132,6 +129,9 @@ intents = {
     "responses": [
       {
         "text": "That is a good question...a question that I don't know the answer to."
+      },
+      {
+        "text": "I am as old as you would like to think I am."
       }
     ]
   },
@@ -228,6 +228,8 @@ def match_utterances(utterance, utterance_pattern):
   # Let's remove puntuation 
   lower_utterance = utterance.lower().strip() 
   clean_utterance = lower_utterance.translate(str.maketrans('', '', string.punctuation))
+  utterance_pattern = utterance_pattern.lower().strip() 
+  utterance_pattern = utterance_pattern.translate(str.maketrans('', '', string.punctuation))
   if clean_utterance == utterance_pattern:
     return True
   else:
@@ -355,8 +357,15 @@ TODO 12: add introduction text where the chatbot introduces themself to the user
 TODO 13: ask user's name and put that into the conversation_state (dict at top)
 """
 def introduction():
-  pass
-
+  introductions = """
+  This is a chatbot designed to have a friendly conversation with the user. 
+  
+  For starters, you may like to try asking its name, or telling it yours! Perhaps it will even tell you a joke.
+  """
+  print(introductions)
+  username = input("What is your name?")
+  username = username.strip()
+  conversation_state["user_name"] = username
 """
 Main program loop
 """
