@@ -43,6 +43,12 @@ conversation_state = {
 # conversation.
 current_intent_name = None
 
+def make_riddle_text(riddle):
+  repeated_text = """
+  What do you think the answer to my riddle is?
+  """
+  return riddle + repeated_text
+
 def update_conversation_state_with_value(variable_name, variable_value):
   def update_this_variable():
     conversation_state[variable_name] = variable_value
@@ -191,60 +197,81 @@ intents = {
       ],
       "responses": [
         {
-          "text": "Ok, you're in a race and you happen to pass the person in second place. What place are you in now?",
+          "text": make_riddle_text(
+            "Ok, you're in a race and you happen to pass the person in second place. What place are you in now?"
+          ),
           "response_function": update_conversation_state_with_value(
             # Here's the key for the variable in the conversation state:
             "riddle_answer",
             # Here's the value of that variable (and the answer to the riddle):
             "Second place. Trickey, ain't it?"
-          )
+          ),
+          "next_intent": "answer_riddle"
         },
-                {
-          "text": "What is there one of in every corner and two of in every room?",
+        {
+          "text": make_riddle_text("What is there one of in every corner and two of in every room?"),
           "response_function": update_conversation_state_with_value(
             "riddle_answer",
             "The letter O. :O"
-          )
+          ),
+          "next_intent": "answer_riddle"
         },
-                 {
-          "text": """ 
+        {
+          "text": make_riddle_text(""" 
           I view the world in little space, 
           Am always changing place;
           No food I eat, but, by my power,
           Procure what millions do devour.
           
-          What am I?""",
+          What am I?"""),
           "response_function": update_conversation_state_with_value(
             "riddle_answer",
             "I am the sun."
-          )
+          ),
+          "next_intent": "answer_riddle"
         },
          {
-          "text": """ 
+          "text": make_riddle_text(""" 
           Through all my days, I've been trampled under feet;
           At length, I'm gone and quite decayed,
           And he whose power and wisdom made
           Me—cannot save my sole!
           
-          What am I?""",
+          What am I?"""),
           "response_function": update_conversation_state_with_value(
             "riddle_answer",
             "I am a shoe."
-          )
+          ),
+          "next_intent": "answer_riddle"
         },
-                 {
-          "text": """ 
+        {
+          "text": make_riddle_text(""" 
           I have streets but no pavements,
           I have cities but no buildings,
           I have forests but no trees,
           I have rivers yet no water.
           
-          What am I?""",
+          What am I?"""),
           "response_function": update_conversation_state_with_value(
             "riddle_answer",
             "I am a map."
-          )
+          ),
+          "next_intent": "answer_riddle"
         },
+      ]
+    },
+    "answer_riddle": {
+      "utterance_patterns": [
+        "The answer to the riddle is..."
+      ],
+      "interpretation_function": update_conversation_state_with_utterance("user_riddle_guess"),
+      "responses": [
+        {
+          "text": """
+      You guessed that the answer was {user_riddle_guess}.
+      The answer is {riddle_answer}""",
+          "required_state_variables": ["riddle_answer", "user_riddle_guess"]
+        }
       ]
     },
     # A default intent. What should we do if we can't understand what the user
@@ -279,6 +306,9 @@ intents = {
       # if we have a number anywhere in our utterance, this will match
       # asterisk ignores any extra spaces
       " *\\d+ *\\+",
+      # this matches anything that starts with a number and does NOT have ANY
+      # letters in it
+      " *\\d[^a-zA-Z]*$"
     ],
     "interpretation_function": update_conversation_state_with_utterance("calculation"),
     "responses": [
@@ -462,6 +492,7 @@ def main():
   introduction()
 
   while conversation_state["continue_conversation"]:
+    # print(conversation_state)
     user_utterance = get_user_utterance()
 
     # We might have an intent leftover?
