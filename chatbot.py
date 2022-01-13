@@ -191,14 +191,60 @@ intents = {
       ],
       "responses": [
         {
-          "text": "Here is an example riddle",
+          "text": "Ok, you're in a race and you happen to pass the person in second place. What place are you in now?",
           "response_function": update_conversation_state_with_value(
             # Here's the key for the variable in the conversation state:
             "riddle_answer",
             # Here's the value of that variable (and the answer to the riddle):
-            "42"
+            "Second place. Trickey, ain't it?"
           )
-        }
+        },
+                {
+          "text": "What is there one of in every corner and two of in every room?",
+          "response_function": update_conversation_state_with_value(
+            "riddle_answer",
+            "The letter O. :O"
+          )
+        },
+                 {
+          "text": """ 
+          I view the world in little space, 
+          Am always changing place;
+          No food I eat, but, by my power,
+          Procure what millions do devour.
+          
+          What am I?""",
+          "response_function": update_conversation_state_with_value(
+            "riddle_answer",
+            "I am the sun."
+          )
+        },
+         {
+          "text": """ 
+          Through all my days, I've been trampled under feet;
+          At length, I'm gone and quite decayed,
+          And he whose power and wisdom made
+          Me—cannot save my sole!
+          
+          What am I?""",
+          "response_function": update_conversation_state_with_value(
+            "riddle_answer",
+            "I am a shoe."
+          )
+        },
+                 {
+          "text": """ 
+          I have streets but no pavements,
+          I have cities but no buildings,
+          I have forests but no trees,
+          I have rivers yet no water.
+          
+          What am I?""",
+          "response_function": update_conversation_state_with_value(
+            "riddle_answer",
+            "I am a map."
+          )
+        },
       ]
     },
     # A default intent. What should we do if we can't understand what the user
