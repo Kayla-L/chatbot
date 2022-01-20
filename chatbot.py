@@ -1,6 +1,7 @@
 from random import choice
 import string
 import re
+import calculator
 
 """
 Instructions:
@@ -59,9 +60,9 @@ def update_conversation_state_with_utterance(variable_name):
     conversation_state[variable_name] = utterance.strip()
   return update_this_variable
 
-def calculate():
+def add():
   calc = conversation_state["calculation"] 
-  print("Answer: " + str(eval(calc)))
+  print("Answer: " + str(calculator.add(calc)))
   # print("wait actually I don't know how to add")
 
 """
@@ -301,20 +302,21 @@ intents = {
         }
       ]
     },
-  "calculator": {
+  "addition": {
     "utterance_patterns": [
       # if we have a number anywhere in our utterance, this will match
       # asterisk ignores any extra spaces
       " *\\d+ *\\+",
       # this matches anything that starts with a number and does NOT have ANY
       # letters in it
-      " *\\d[^a-zA-Z]*$"
+      # " *\\d[^a-zA-Z]*$"
+      " *\\d*\\.?\\d+ *\\+",
     ],
     "interpretation_function": update_conversation_state_with_utterance("calculation"),
     "responses": [
       {
         "text": "You asked me to add some stuff. Here's the answer:",
-        "response_function": calculate
+        "response_function": add
       }
     ]
   }
