@@ -19,7 +19,7 @@ TODO:
     a. [ ] break the corpus up into sentences
     b. [ ] for each sentence:
         - [ ] break the sentence up into words
-        - [ ] for each word, convert the word to a vector (i.e. a bunch of numbers)
+        - [ ] for each word, convert the word to a vector (i.e. a bunch of numbers) - see this link: https://towardsdatascience.com/how-to-vectorize-text-in-dataframes-for-nlp-tasks-3-simple-techniques-82925a5600db
         - [ ] average together all the word vectors
 3. [ ] when we get the user utterance, change that to numbers
 4. [ ] find the closest set of numbers in the corpus to the user utterance
