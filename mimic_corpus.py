@@ -27,6 +27,23 @@ from sklearn.metrics.pairwise import cosine_similarity
 # import sqlite3
 # [x] get a corpus of example conversation
 
+import spacy
+
+# TODO: define function get_clean_sentence
+# clean_sentence = get_clean_sentence(sentence)
+def get_clean_sentence(sentence):
+  # lower case everything 
+  new_sentence = sentence.lower()
+  # turn new lines into spaces
+  new_sentence = re.sub("\\n", " ", new_sentence)
+    # get rid of anything that's not a number, letter or space
+  new_sentence = re.sub("[^a-z0-9 ]", "", new_sentence)
+  # remove whitespace at the beginning and end of the sentence
+  new_sentence = new_sentence.strip()
+  # if there's more than one space in a row, 
+  new_sentence = re.sub("\\s+", " ", new_sentence)
+  return new_sentence
+
 # poe_corpus is a pandas dataframe
 poe_corpus = pd.read_csv("poe_stories.csv")
 # poe_stories is a pandas series
@@ -41,43 +58,45 @@ clean_sentences = []
 # we clean up each sentence to be easier to deal with
 for sentence in sentences:
 
-  # # TODO: define function get_clean_sentence
-  # clean_sentence = get_clean_sentence(sentence)
-
-  # lower case everything
-  clean_sentence = sentence.lower()
-  # turn new lines into spaces
-  clean_sentence = re.sub("\\n", " ", clean_sentence)
-  # get rid of anything that's not a number, letter or space
-  clean_sentence = re.sub("[^a-z0-9 ]", "", clean_sentence)
-  # remove whitespace at the beginning and end of the sentence
-  clean_sentence = clean_sentence.strip()
-  # if there's more than one space in a row, 
-  clean_sentence = re.sub("\\s+", " ", clean_sentence)
-
-
+  clean_sentence = get_clean_sentence(sentence)
 
   if re.search("(said|replied|answered|declared)", clean_sentence):
     pass
   else:
     clean_sentences.append(clean_sentence)
 
-# create the transform
-vectorizer = TfidfVectorizer()
-# tokenize and build vocab
-# This is where it learns all the unique words that ever show
-# up in the corpus.
-vectorizer.fit(clean_sentences)
-# encode document
-vectors = vectorizer.transform(clean_sentences)
-# # summarize encoded vector
-# print(vectors.shape)
-# print(type(vectors))
-# print(vectors.toarray())
+# # create the transform
+# vectorizer = TfidfVectorizer()
+# # tokenize and build vocab
+# # This is where it learns all the unique words that ever show
+# # up in the corpus.
+# vectorizer.fit(clean_sentences)
+# # encode document
+# vectors = vectorizer.transform(clean_sentences)
+# # # summarize encoded vector
+# # print(vectors.shape)
+# # print(type(vectors))
+# # print(vectors.toarray())
+
+# Load the spacy model that you have installed
+nlp = spacy.load('en_core_web_sm')
+# process a sentence using the model
+
+def get_vector(sentence):
+  doc = nlp(sentence)
+  # It's that simple - all of the vectors and words are assigned after this point
+  # Get the mean vector for the entire sentence (useful for sentence classification etc.)
+  return doc.vector
+
+vectors = []
+for sentence in clean_sentences[:100]:
+  vector = get_vector(sentence)
+  vectors.append(vector)
 
 input_sentence_to_chatbot = ["it is a beautiful day today"]
-input_sentence_vector = vectorizer.transform(
-  input_sentence_to_chatbot)
+# input_sentence_vector = vectorizer.transform(
+  # input_sentence_to_chatbot)
+input_sentence_vector = [get_vector(input_sentence_to_chatbot[0])]
 # print(input_sentence_vector)
 # print(vectorizer.vocabulary_["good"])
 # print(vectorizer.vocabulary_["night"])
@@ -86,8 +105,8 @@ input_sentence_vector = vectorizer.transform(
 cosine_similarities = cosine_similarity(vectors, input_sentence_vector).flatten()
 best_match_index = cosine_similarities.argmax()
 
-print(clean_sentences[best_match_index])
-print(clean_sentences[best_match_index + 1])
+print("best match in corpus:", clean_sentences[best_match_index])
+print("chatbot response:", clean_sentences[best_match_index + 1])
 
 # conn = sqlite3.connect("classical_literature.db")
 # classical_corpus = pd.read_sql("select * from text_files", conn)
