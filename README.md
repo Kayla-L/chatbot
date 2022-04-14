@@ -23,3 +23,5 @@ TODO:
         - [ ] average together all the word vectors
 3. [ ] when we get the user utterance, change that to numbers
 4. [ ] find the closest set of numbers in the corpus to the user utterance
+5. [ ] fix missing spaces 
+6. [ ] scale words by frequency 

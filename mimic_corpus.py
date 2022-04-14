@@ -97,7 +97,7 @@ def get_vector(sentence):
 #   vectors.append(vector)
 
 corpus_embeddings = word_vectors.get_sentence_vectors(clean_sentences)
-input_sentence_to_chatbot = clean_sentences[500]
+input_sentence_to_chatbot = "it is a beautiful day today"
 print(input_sentence_to_chatbot)
 input_sentence_vector = word_vectors.get_sentence_vectors([input_sentence_to_chatbot])[0]
 
@@ -117,13 +117,16 @@ def cosine_distances(embedding_matrix, extracted_embedding):
   return cosine(embedding_matrix, extracted_embedding)
 cosine_distances = np.vectorize(cosine_distances, signature='(m),(d)->()')
 
-cosine_similarities = cosine_distances(corpus_embeddings, input_sentence_vector)
+cosine_similarities = 1-cosine_distances(corpus_embeddings, input_sentence_vector)
 # print(cosine_similarities)
 best_match_index = cosine_similarities.argmax()
 # print(best_match_index)
 
 print("best match in corpus:", [clean_sentences[best_match_index]])
 print("chatbot response:", clean_sentences[best_match_index + 1])
+
+# print(corpus_embeddings[500])
+# print(input_sentence_vector)
 # print(len(clean_sentences))
 # print(corpus_embeddings.shape)
 # print(corpus_embeddings[best_match_index])
