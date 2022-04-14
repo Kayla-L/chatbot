@@ -1,5 +1,8 @@
 import pandas as pd
 import re
+import word_vectors
+from scipy.spatial.distance import cosine
+import numpy as np
 
 # For ever word that ever appears in the stories we entered,
 # this will count how many times each word appears in
@@ -88,25 +91,43 @@ def get_vector(sentence):
   # Get the mean vector for the entire sentence (useful for sentence classification etc.)
   return doc.vector
 
-vectors = []
-for sentence in clean_sentences[:100]:
-  vector = get_vector(sentence)
-  vectors.append(vector)
+# vectors = []
+# for sentence in clean_sentences[:100]:
+#   vector = get_vector(sentence)
+#   vectors.append(vector)
 
-input_sentence_to_chatbot = ["it is a beautiful day today"]
+corpus_embeddings = word_vectors.get_sentence_vectors(clean_sentences)
+input_sentence_to_chatbot = clean_sentences[500]
+print(input_sentence_to_chatbot)
+input_sentence_vector = word_vectors.get_sentence_vectors([input_sentence_to_chatbot])[0]
+
+
 # input_sentence_vector = vectorizer.transform(
   # input_sentence_to_chatbot)
-input_sentence_vector = [get_vector(input_sentence_to_chatbot[0])]
+# input_sentence_vector = [get_vector(input_sentence_to_chatbot[0])]
 # print(input_sentence_vector)
 # print(vectorizer.vocabulary_["good"])
 # print(vectorizer.vocabulary_["night"])
 
 # Finding the best matching sentence to the input
-cosine_similarities = cosine_similarity(vectors, input_sentence_vector).flatten()
-best_match_index = cosine_similarities.argmax()
+# cosine_similarities = cosine_similarity(vectors, input_sentence_vector).flatten()
+# best_match_index = cosine_similarities.argmax()
 
-print("best match in corpus:", clean_sentences[best_match_index])
+def cosine_distances(embedding_matrix, extracted_embedding):
+  return cosine(embedding_matrix, extracted_embedding)
+cosine_distances = np.vectorize(cosine_distances, signature='(m),(d)->()')
+
+cosine_similarities = cosine_distances(corpus_embeddings, input_sentence_vector)
+# print(cosine_similarities)
+best_match_index = cosine_similarities.argmax()
+# print(best_match_index)
+
+print("best match in corpus:", [clean_sentences[best_match_index]])
 print("chatbot response:", clean_sentences[best_match_index + 1])
+# print(len(clean_sentences))
+# print(corpus_embeddings.shape)
+# print(corpus_embeddings[best_match_index])
+# print(word_vectors.embeddings_dict["nitre"])
 
 # conn = sqlite3.connect("classical_literature.db")
 # classical_corpus = pd.read_sql("select * from text_files", conn)
@@ -143,4 +164,6 @@ print("chatbot response:", clean_sentences[best_match_index + 1])
 #  the whole sentence is going to be the average of those numbers
 
 # return the response to the closest match
+
+
 

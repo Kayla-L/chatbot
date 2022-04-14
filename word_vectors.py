@@ -25,21 +25,27 @@ corpus = [
   "my name is xyz123asdflk"
 ]
 
-sentence_vectors = []
-for sentence in corpus:
-  print(sentence)
-  word_vectors = []
-  for word in sentence.split():
-    # print(word)
-    if word in embeddings_dict:
-      vector = embeddings_dict[word]
-      # print(vector)
-      word_vectors.append(vector)
-  sentence_matrix = np.stack(word_vectors)
-  sentence_vector = sentence_matrix.mean(axis = 0)
-  sentence_vectors.append(sentence_vector)
+empty_sentence = np.zeros(embeddings_dict["word"].shape)+100
+def get_sentence_vectors(corpus):
+  sentence_vectors = []
+  for sentence in corpus:
+    # print(sentence)
+    word_vectors = []
+    for word in sentence.split():
+      # print(word) 
+      if word in embeddings_dict:
+        vector = embeddings_dict[word]
+        # print(vector)
+        word_vectors.append(vector)
+    if len(word_vectors) > 0:
+      sentence_matrix = np.stack(word_vectors)
+      sentence_vector = sentence_matrix.mean(axis = 0)
+      sentence_vectors.append(sentence_vector)
+    else:
+      sentence_vectors.append(empty_sentence)
+
   # print(sentence_matrix)
   # print(sentence_vectors)
-corpus_matrix = np.stack(sentence_vectors)
-print(corpus_matrix)
+  corpus_matrix = np.stack(sentence_vectors)
+  return corpus_matrix
 
