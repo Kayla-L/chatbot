@@ -2,6 +2,10 @@ from random import choice
 import string
 import re
 import calculator
+from mimic_corpus import MimicCorpus
+
+
+mimic_corpus_both = MimicCorpus("both")
 
 """
 Instructions:
@@ -64,6 +68,10 @@ def add():
   calc = conversation_state["calculation"] 
   print("Answer: " + str(calculator.add(calc)))
   # print("wait actually I don't know how to add")
+
+def mimic_corpus_interpretation_function(utterance):
+  quote_response = mimic_corpus_both.get_chatbot_response(utterance)
+  conversation_state["quote_response"] = quote_response
 
 """
 Here's where we store data of what kinds of intentions the user might have in
@@ -279,11 +287,18 @@ intents = {
     # was trying to say?
     "default": {
       "utterance_patterns": [],
+      # "responses": [
+      #   {
+      #     "text": "I'm sorry, I did not understand."
+      #   }
+      # ]
       "responses": [
         {
-          "text": "I'm sorry, I did not understand."
+          "text": "{quote_response}",
+          "required_state_variables": ["quote_response"]
         }
-      ]
+      ],
+      "interpretation_function": mimic_corpus_interpretation_function,
     },
         "end_conversation": {
       "utterance_patterns": [
